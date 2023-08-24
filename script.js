@@ -7,11 +7,11 @@ if (canvas) {
    const GRID_SIZE   = 8;
    const LINE_SIZE   = SCREEN_SIZE/GRID_SIZE;  
 
-   let player_lin = 5;
+   let player_lin = 4;
    let player_col = 4;
    let dir = 1;
 
-   const map = [
+   let map = [
       [1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 0, 1, 1, 1, 0, 1],
@@ -21,6 +21,20 @@ if (canvas) {
       [1, 0, 0, 1, 1, 1, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1]
    ]
+
+   function rotateLeft() {
+      map = map[0].map((val, index) => map.map(row => row[index]).reverse());
+      aux = player_col;
+      player_col = 7-player_lin;
+      player_lin = aux;
+   }
+
+   function rotateRight() {
+      map = map[0].map((val, index) => map.map(row => row[row.length-1-index]));
+      aux = player_col;
+      player_col = player_lin;
+      player_lin = 7-aux;
+   }
 
    function drawFrontWalls(sizeX, sizeY) {
       // Desenha parte de cima parede
@@ -214,15 +228,15 @@ if (canvas) {
    document.addEventListener("keydown",
       function(event) {
         switch (event.key) {
-         case 'w': player_lin+=-dir; break;
-         case 's': dir = -dir; break;
-         case 'a': aux = player_col; player_col = player_lin; player_lin = aux; break;
-         case 'd': aux = player_col; player_col = player_lin; player_lin = aux; dir= -dir; break;
+         case 'w': if(map[player_lin-1][player_col] == 0){ player_lin--; } break;
+         case 's': rotateLeft(); rotateLeft(); break;
+         case 'a': rotateLeft();  break;
+         case 'd': rotateRight(); break;
 
          default: break;
         }
       },
     );
 
-   setInterval(gameLoop, 60);
+   setInterval(gameLoop, 1000 / 30);
 }
