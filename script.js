@@ -7,7 +7,7 @@ if (canvas) {
    const GRID_SIZE   = 8;
    const LINE_SIZE   = SCREEN_SIZE/GRID_SIZE;  
 
-   let player_lin = 4;
+   let player_lin = 5;
    let player_col = 4;
    let dir = 1;
 
@@ -15,12 +15,29 @@ if (canvas) {
       [1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 0, 1, 1, 1, 0, 1],
-      [1, 0, 0, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 0, 1, 0, 1, 0, 1],
       [1, 0, 0, 1, 0, 1, 0, 1],
       [1, 0, 0, 1, 1, 1, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1]
    ]
+
+   // Sprites da primeira layer
+   let img_Center1 = new Image();
+   let img_Left1 = new Image();
+   let img_Right1 = new Image();
+   img_Center1.src = './Center1.png';
+   img_Left1.src = './Left1.png';
+   img_Right1.src = './Right1.png';
+
+   // Sprites da segunda layer
+   let img_Center2 = new Image();
+   let img_Left2 = new Image();
+   let img_Right2 = new Image();
+   img_Center2.src = './Center2.png';
+   img_Left2.src = './Left2.png';
+   img_Right2.src = './Right2.png';
+
 
    function rotateLeft() {
       map = map[0].map((val, index) => map.map(row => row[index]).reverse());
@@ -67,23 +84,23 @@ if (canvas) {
 
       // Checa primeira layer por paredes
       if(map[player_lin-dir][player_col] == 1) {
-         ctx.strokeRect(SCREEN_SIZE/4, SCREEN_SIZE/4, SCREEN_SIZE/2, SCREEN_SIZE/2);
+         ctx.drawImage(img_Center1, SCREEN_SIZE/4, SCREEN_SIZE/4, 256, 256);
          done = true;
       }
       if(map[player_lin][player_col-dir] == 0) {
-         ctx.strokeRect(SCREEN_SIZE/4-256, SCREEN_SIZE/4, SCREEN_SIZE/2, SCREEN_SIZE/2);
+         ctx.drawImage(img_Center1, SCREEN_SIZE/4-256, SCREEN_SIZE/4, 256, 256);
       }
       if(map[player_lin][player_col+dir] == 0) {
-         ctx.strokeRect(SCREEN_SIZE/4+256, SCREEN_SIZE/4, SCREEN_SIZE/2, SCREEN_SIZE/2);
+         ctx.drawImage(img_Center1, SCREEN_SIZE/4+256, SCREEN_SIZE/4, 256, 256);
       }
 
       // Parede esquerda
       if(map[player_lin][player_col-dir] == 1) {
-         drawSideWalls(0, 0, SCREEN_SIZE/4, SCREEN_SIZE/4);
+         ctx.drawImage(img_Left1, 0, 0, 128, 512);
       }
       // Parede direita
       if(map[player_lin][player_col+dir] == 1) {
-         drawSideWalls(SCREEN_SIZE, 0, 3*SCREEN_SIZE/4, SCREEN_SIZE/4);
+         ctx.drawImage(img_Right1, 3*SCREEN_SIZE/4, 0, 128, 512);
       }
 
       return done;
@@ -92,84 +109,49 @@ if (canvas) {
    function drawSecondLayer(player_lin, player_col, dir) {
       let done = false;
 
-      // Checa primeira layer por paredes
+      // Checa segunda layer por paredes
       if(map[player_lin-(2*dir)][player_col] == 1) {
-         ctx.strokeRect(3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8, SCREEN_SIZE/4, SCREEN_SIZE/4);
+         ctx.drawImage(img_Center2, 3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8, 128, 128);
          done = true;
       }
       if(map[player_lin-dir][player_col-dir] == 0) {
-         ctx.strokeRect(3*SCREEN_SIZE/8-64, 3*SCREEN_SIZE/8, SCREEN_SIZE/8, SCREEN_SIZE/4);
+         ctx.drawImage(img_Center2, 3*SCREEN_SIZE/8-64, 3*SCREEN_SIZE/8, 64, 128);
       }
       if(map[player_lin-dir][player_col+dir] == 0) {
-         ctx.strokeRect(3*SCREEN_SIZE/8+192, 3*SCREEN_SIZE/8, SCREEN_SIZE/8, SCREEN_SIZE/4);
+         ctx.drawImage(img_Center2, 7*SCREEN_SIZE/16+64, 3*SCREEN_SIZE/8, 96, 128);
       }
 
       // Parede esquerda
       if(map[player_lin-dir][player_col-dir] == 1) {
-         ctx.beginPath();
-         ctx.moveTo(SCREEN_SIZE/4, SCREEN_SIZE/4);
-         ctx.lineTo(3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-
-         ctx.moveTo(SCREEN_SIZE/4, 3*SCREEN_SIZE/4);
-         ctx.lineTo(3*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-
-         ctx.moveTo(3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-         ctx.lineTo(3*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-
-         ctx.stroke();
+         ctx.drawImage(img_Left2, SCREEN_SIZE/4, SCREEN_SIZE/4, 64, 256);
       }
       // Parede direita
       if(map[player_lin-dir][player_col+dir] == 1) {
-         ctx.beginPath();
-         ctx.moveTo(3*SCREEN_SIZE/4, SCREEN_SIZE/4);
-         ctx.lineTo(5*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-
-         ctx.moveTo(3*SCREEN_SIZE/4, 3*SCREEN_SIZE/4);
-         ctx.lineTo(5*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-
-         ctx.moveTo(5*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-         ctx.lineTo(5*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-
-         ctx.stroke();
+         ctx.drawImage(img_Right2, 5*SCREEN_SIZE/8, SCREEN_SIZE/4, 64, 256);
       }
 
       return done;
    }
 
    function drawThirdLayer(player_lin, player_col, dir) {
-      // Checa primeira layer por paredes
+      // Checa terceira layer por paredes
       if(map[player_lin-(3*dir)][player_col] == 1) {
-         ctx.strokeRect(7*SCREEN_SIZE/16, 7*SCREEN_SIZE/16, SCREEN_SIZE/8, SCREEN_SIZE/8);
-         done = true;
+         ctx.drawImage(img_Center1, 7*SCREEN_SIZE/16, 7*SCREEN_SIZE/16, 64, 64);
       }
       if(map[player_lin-(2*dir)][player_col-dir] == 0) {
-         ctx.strokeRect(7*SCREEN_SIZE/16-64, 7*SCREEN_SIZE/16, SCREEN_SIZE/8, SCREEN_SIZE/8);
+         ctx.drawImage(img_Center1, 7*SCREEN_SIZE/16-32, 7*SCREEN_SIZE/16, 32, 64);
       }
       if(map[player_lin-(2*dir)][player_col+dir] == 0) {
-         ctx.strokeRect(7*SCREEN_SIZE/16+64, 7*SCREEN_SIZE/16, SCREEN_SIZE/8, SCREEN_SIZE/8);
+         ctx.drawImage(img_Center1, 7*SCREEN_SIZE/16+64, 7*SCREEN_SIZE/16, 32, 64);
       }
 
       // Parede esquerda
-      if(map[player_lin-(3*dir)][player_col-dir] == 1) {
-         ctx.beginPath();
-         ctx.moveTo(3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-         ctx.lineTo(7*SCREEN_SIZE/16, 7*SCREEN_SIZE/16);
-
-         ctx.moveTo(3*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-         ctx.lineTo(7*SCREEN_SIZE/16, 9*SCREEN_SIZE/16);
-
-         ctx.stroke();
+      if(map[player_lin-(2*dir)][player_col-dir] == 1) {
+         ctx.drawImage(img_Left1, 3*SCREEN_SIZE/8, 3*SCREEN_SIZE/8, 32, 128);
       }
       // Parede direita
-      if(map[player_lin-(3*dir)][player_col+dir] == 1) {
-         ctx.beginPath();
-         ctx.moveTo(5*SCREEN_SIZE/8, 3*SCREEN_SIZE/8);
-         ctx.lineTo(9*SCREEN_SIZE/16, 7*SCREEN_SIZE/16);
-
-         ctx.moveTo(5*SCREEN_SIZE/8, 5*SCREEN_SIZE/8);
-         ctx.lineTo(9*SCREEN_SIZE/16, 9*SCREEN_SIZE/16);
-
-         ctx.stroke();
+      if(map[player_lin-(2*dir)][player_col+dir] == 1) {
+         ctx.drawImage(img_Right1, 9*SCREEN_SIZE/16, 3*SCREEN_SIZE/8, 32, 128);
       }
    }
 
