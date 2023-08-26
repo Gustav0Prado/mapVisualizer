@@ -22,14 +22,19 @@ if (canvas) {
       [1, 1, 1, 1, 1, 1, 1, 1]
    ]
 
-   // Sprites da primeira layer
+   // Sprites
    let spr_wall_center = new Image();
    let spr_wall_left   = new Image();
    let spr_wall_right  = new Image();
+   let spr_ground      = new Image();
+   let spr_ceiling     = new Image();
+
+   // Load sprite sources
    spr_wall_center.src = './assets/sprites/wall_center.png';
    spr_wall_left.src   = './assets/sprites/wall_left.png';
    spr_wall_right.src  = './assets/sprites/wall_right.png';
-
+   spr_ground.src      = './assets/sprites/ground.png';
+   spr_ceiling.src     = './assets/sprites/ceiling.png';
 
    function rotateLeft() {
       map = map[0].map((val, index) => map.map(row => row[index]).reverse());
@@ -59,7 +64,7 @@ if (canvas) {
    function draw3DMap() {
       let done = false;
 
-      for(let layer = 1; layer < 8 && !done; ++layer) {
+      for(let layer = 0; layer < 8 && !done; ++layer) {
          // Pontos de guia
          let offSet = SCREEN_SIZE/(2**layer);
          let size = {
@@ -76,46 +81,52 @@ if (canvas) {
             x: SCREEN_SIZE/2+(offSet/2), 
             y: SCREEN_SIZE/2-(offSet/2),
          };
+         let bottomLeft = {
+            x: SCREEN_SIZE/2-(offSet/2), 
+            y: SCREEN_SIZE/2+(offSet/2),
+         };
 
-         // Checa  layer por paredes frontais diretas
+         // Check for frontal walls
          if(map[player_lin-(layer*dir)][player_col] == 1) {
             ctx.drawImage(spr_wall_center, topLeft.x, topLeft.y, size.full, size.full);
-            darkenLayer(topLeft.x, topLeft.y, size.full, size.full, layer);
             done = true;
          }
 
-         // Paredes frontais indiretas (para os lados)
-         if(map[player_lin-(layer*dir-1)][player_col-dir] == 0) { //esquerda
+         // Background frontal walls
+         if(map[player_lin-(layer*dir-1)][player_col-dir] == 0) { //left
             ctx.drawImage(spr_wall_center, topLeft.x-size.half, topLeft.y, size.half, size.full);
-            darkenLayer(topLeft.x-size.half, topLeft.y, size.half, size.full, layer);
          }
-         if(map[player_lin-(layer*dir-1)][player_col+dir] == 0) { //direita
+         if(map[player_lin-(layer*dir-1)][player_col+dir] == 0) { //right
             ctx.drawImage(spr_wall_center, topLeft.x+size.full, topLeft.y, size.half, size.full);
-            darkenLayer(topLeft.x+size.full, topLeft.y, size.half, size.full, layer);
          }
 
-         // Parede esquerda
+         // Left Wall
          if(map[player_lin-(layer*dir-1)][player_col-dir] == 1) {
             ctx.drawImage(spr_wall_left, topLeft.x-size.half, topLeft.y-size.half, size.half, size.double);
-            darkenLayer(topLeft.x-size.half, topLeft.y-size.half, size.half, size.double, layer);
          }
-         // Parede direita
+         // Right Wall
          if(map[player_lin-(layer*dir-1)][player_col+dir] == 1) {
             ctx.drawImage(spr_wall_right, topRight.x, topRight.y-size.half, size.half, size.double);
-            darkenLayer(topRight.x, topRight.y-size.half, size.half, size.double, layer);
          }
+
+         // Draw ceiling and ground
+         ctx.drawImage(spr_ground, bottomLeft.x-size.half, bottomLeft.y, size.double, size.half);
+         ctx.drawImage(spr_ceiling, topLeft.x-size.half, topLeft.y-size.half, size.double, size.half);
+      
+         debugger;
+         darkenLayer(topLeft.x-size.half, topLeft.y-size.half, size.double, size.double, layer);
       }
    }
 
    function drawMiniMap() {
       for(let i = 0; i < 8; ++i) {
          for(let j = 0; j < 8; ++j) {
+            // Minimap is 32*32
             let x = SCREEN_SIZE-32+(4*j);
             let y = SCREEN_SIZE-32+(4*i);
             
-            // Se tile estiver ocupada, desenha branca
+            // Walls are white
             if(map[i][j]) {
-               // Desenha minimapa
                ctx.fillStyle = "white";
                ctx.fillRect(x, y, 4, 4);
             }
@@ -128,7 +139,7 @@ if (canvas) {
    }
 
    function gameLoop() {
-      // Desenha fundo
+      // Draw background
       ctx.rect(0, 0, SCREEN_SIZE, SCREEN_SIZE)
       ctx.fillStyle = "black";
       ctx.fill();
@@ -150,6 +161,5 @@ if (canvas) {
       },
    );
 
-   console.log(window.innerWidth, window.innerHeight);
    setInterval(gameLoop, 1000 / 30);
 }
