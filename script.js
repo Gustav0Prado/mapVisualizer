@@ -139,16 +139,17 @@ if (canvas) {
 
    document.addEventListener("keydown",
       function(event) {
-        switch (event.key) {
+         switch (event.key) {
          case 'w': if(map[player_lin-1][player_col] == 0){ player_lin--; } break;
          case 's': rotateLeft(); rotateLeft(); break;
          case 'a': rotateLeft();  break;
          case 'd': rotateRight(); break;
 
          default: break;
-        }
+         }
       },
-    );
+   );
 
+   console.log(window.innerWidth, window.innerHeight);
    setInterval(gameLoop, 1000 / 30);
 }
