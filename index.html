@@ -7,9 +7,12 @@
    <title> Map Visualizer </title>
 </head>
 <body>
-   <div class="canvas-container">
-      <canvas id="gameCanvas" class="gameCanvas" width="512" height="512"></canvas>
+   <div class="wrapper">
+      <canvas id="c1" class="gameCanvas" width="800" height="600" style="z-index: 0; background-color: black;"></canvas>
+      <canvas id="c2" class="gameCanvas" width="650" height="480" style="z-index: 1;"></canvas>
+      <canvas id="c3" class="gameCanvas" width="300" height="200" style="z-index: 2;"></canvas>
+      <canvas id="c4" class="gameCanvas" width="200" height="100" style="z-index: 3;"></canvas>
    </div>
-   <script src="script.js"> </script>
 </body>
+<script src="script.js"> </script>
 </html>

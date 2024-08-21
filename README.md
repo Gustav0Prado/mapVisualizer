@@ -2,7 +2,7 @@
 
 # Project ⚔️
 
-Old-school dungeon crawler type renderer, based on games like Phantasy Start, Shin Megami Tensei, etc
+Old-school dungeon crawler type using wireframe graphics, based on games like Akalabeth, Ultima, etc
 
 # Roadmap 🗺️
 
